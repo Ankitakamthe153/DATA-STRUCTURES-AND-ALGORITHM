@@ -1,0 +1,65 @@
+/*
+Find count of number of subarrays with sum ==  k 
+
+*/
+
+-------------------- Brute Force --------------------------------------
+public class SubarraySumEqualsK {
+    public static int countSubarraysWithSumK(int[] nums, int k) {
+        int n = nums.length;
+        int count = 0;
+
+        // Iterate over all possible subarrays
+        for (int j = 0; j < n; j++) {
+            int sum = 0;
+            // Check all subarrays ending at index j
+            for (int i = j; i >= 0; i--) {
+                sum += nums[i];
+                if (sum == k) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    public static void main(String[] args) {
+        int[] nums = {1, 2, 3, -2, 5}; // Example array
+        int k = 5; // Target sum
+        int result = countSubarraysWithSumK(nums, k);
+        System.out.println("Number of subarrays with sum " + k + " = " + result);
+    }
+}
+
+
+
+---------------------- Optimised approach ----------------------------
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class SubarraySumEqualsK {
+    public static int countSubarraysWithSumK(int[] nums, int k) {
+        Map<Integer, Integer> freq = new HashMap<>();
+        freq.put(0, 1); // Initialize with 0 sum having frequency 1
+        int currentSum = 0;
+        int count = 0;
+
+        for (int num : nums) {
+            currentSum += num;
+            int x = currentSum - k;
+            count += freq.getOrDefault(x, 0);
+            freq.put(currentSum, freq.getOrDefault(currentSum, 0) + 1);
+        }
+
+        return count;
+    }
+
+    public static void main(String[] args) {
+        int[] nums = {1, 2, 3, -2, 5};
+        int k = 5;
+        int result = countSubarraysWithSumK(nums, k);
+        System.out.println("Number of subarrays with sum " + k + " = " + result);
+    }
+}
+
