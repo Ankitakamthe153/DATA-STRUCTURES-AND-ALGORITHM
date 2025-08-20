@@ -1,0 +1,121 @@
+/*
+Find largest/smallest subarray with sum k in Given Array
+*/
+
+-------------------------- Brute Force ---------------------------------------
+public class LargestSmallestSubarrayWithSumK {
+    public static void findSubarray(int[] nums, int k) {
+        int n = nums.length;
+        int maxLength = Integer.MIN_VALUE;
+        int minLength = Integer.MAX_VALUE;
+        int maxStartIndex = -1;
+        int minStartIndex = -1;
+
+        for (int i = 0; i < n; i++) {
+            int sum = 0;
+            for (int j = i; j < n; j++) {
+                sum += nums[j];
+                if (sum == k) {
+                    int length = j - i + 1;
+                    if (length > maxLength) {
+                        maxLength = length;
+                        maxStartIndex = i;
+                    }
+                    if (length < minLength) {
+                        minLength = length;
+                        minStartIndex = i;
+                    }
+                }
+            }
+        }
+
+        if (maxStartIndex != -1) {
+            System.out.println("Largest subarray with sum " + k + " is:");
+            for (int i = maxStartIndex; i < maxStartIndex + maxLength; i++) {
+                System.out.print(nums[i] + " ");
+            }
+            System.out.println("\nLength: " + maxLength);
+        } else {
+            System.out.println("No subarray found with sum " + k);
+        }
+
+        if (minStartIndex != -1) {
+            System.out.println("Smallest subarray with sum " + k + " is:");
+            for (int i = minStartIndex; i < minStartIndex + minLength; i++) {
+                System.out.print(nums[i] + " ");
+            }
+            System.out.println("\nLength: " + minLength);
+        }
+    }
+
+    public static void main(String[] args) {
+        int[] nums = {1, 4, 20, 3, 10, 5};
+        int k = 33;
+        findSubarray(nums, k);
+    }
+}
+
+
+-------------------------- Optimised approach -----------------------------------------
+import java.util.HashMap;
+import java.util.Map;
+
+public class LargestSmallestSubarrayWithSumK {
+    public static void findSubarray(int[] nums, int k) {
+        Map<Integer, Integer> prefixSumMap = new HashMap<>();
+        prefixSumMap.put(0, -1); // Initialize with 0 sum having index -1
+        int currentSum = 0;
+        int maxLength = Integer.MIN_VALUE;
+        int minLength = Integer.MAX_VALUE;
+        int maxStartIndex = -1;
+        int minStartIndex = -1;
+
+        for (int j = 0; j < nums.length; j++) {
+            currentSum += nums[j];
+            int targetSum = currentSum - k;
+
+            if (prefixSumMap.containsKey(targetSum)) {
+                int i = prefixSumMap.get(targetSum) + 1;
+                int length = j - i + 1;
+
+                if (length > maxLength) {
+                    maxLength = length;
+                    maxStartIndex = i;
+                }
+
+                if (length < minLength) {
+                    minLength = length;
+                    minStartIndex = i;
+                }
+            }
+
+            if (!prefixSumMap.containsKey(currentSum)) {
+                prefixSumMap.put(currentSum, j);
+            }
+        }
+
+        if (maxStartIndex != -1) {
+            System.out.println("Largest subarray with sum " + k + " is:");
+            for (int i = maxStartIndex; i < maxStartIndex + maxLength; i++) {
+                System.out.print(nums[i] + " ");
+            }
+            System.out.println("\nLength: " + maxLength);
+        } else {
+            System.out.println("No subarray found with sum " + k);
+        }
+
+        if (minStartIndex != -1) {
+            System.out.println("Smallest subarray with sum " + k + " is:");
+            for (int i = minStartIndex; i < minStartIndex + minLength; i++) {
+                System.out.print(nums[i] + " ");
+            }
+            System.out.println("\nLength: " + minLength);
+        }
+    }
+
+    public static void main(String[] args) {
+        int[] nums = {1, 4, 20, 3, 10, 5};
+        int k = 33;
+        findSubarray(nums, k);
+    }
+}
